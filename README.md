@@ -6,8 +6,6 @@ End-to-end speech recognition using RNN-Transducer in Tensorflow 2.0
 
 This speech recognition model is based off Google's [Streaming End-to-end Speech Recognition For Mobile Devices](https://arxiv.org/pdf/1811.06621.pdf) research paper and is implemented in Python 3 using Tensorflow 2.0
 
-> **_NOTE:_** If you are not training using docker you must run the following commands + setup the loss function (instructions for this can be found in `warp-transducer/tensorflow_binding`)
-
 ## Setup Your Environment
 
 To setup your environment, run the following command:
@@ -15,8 +13,9 @@ To setup your environment, run the following command:
 ```
 git clone --recurse https://github.com/noahchalifour/rnnt-speech-recognition.git
 cd rnnt-speech-recognition
-pip install tensorflow==2.1.0 # or tensorflow-gpu==2.1.0 for GPU support
+pip install tensorflow==2.2.0 # or tensorflow-gpu==2.2.0 for GPU support
 pip install -r requirements.txt
+./scripts/build_rnnt.sh # to setup the rnnt loss
 ```
 
 ## Common Voice
@@ -30,7 +29,7 @@ Before you can train a model on the Common Voice dataset, you must first convert
 > **_NOTE:_** Make sure you have `ffmpeg` installed on your computer, as it uses that to convert mp3 to wav
 
 ```
-./scripts/common_voice_convert.sh <data_dir>
+./scripts/common_voice_convert.sh <data_dir> <# of threads>
 python scripts/remove_missing_samples.py \
     --data_dir <data_dir> \
     --replace_old
@@ -53,16 +52,16 @@ python preprocess_common_voice.py \
 To train a simple model, run the following command:
 
 ```
-python run_common_voice.py \
+python run_rnnt.py \
     --mode train \
-    --data_dir <path to common voice directory>
+    --data_dir <path to data directory>
 ```
 
 <!-- #### Training in Docker Container
 
 [View Image](https://hub.docker.com/r/noahchalifour/rnnt-speech-recognition)
 
-You can also train your model in a docker container based on the Tensorflow docker image. 
+You can also train your model in a docker container based on the Tensorflow docker image.
 
 > **_NOTE:_** Specify all your paramters in ALL CAPS as environment variables when training in a docker container.
 
